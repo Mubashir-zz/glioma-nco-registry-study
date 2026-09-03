@@ -1,0 +1,45 @@
+================ DEFINITIVE GLOBAL SET (N=289) ================
+Registry_Source: US(CT.gov) 275  International(ISRCTN/EU-CTR) 14 
+
+NCO registered  : 39/289 = 13.5% (95% CI 10.0-17.9)  | as PRIMARY endpoint: 2 
+HRQoL registered: 105/289 = 36.3% (95% CI 31.0-42.0) 
+NCO vs HRQoL McNemar p = 4.15e-14 
+
+--- NCO by sponsor ---
+  Academic/Investigator-Initiated : 25/145 = 17.2% (95% CI 12.0-24.2) 
+  Government/Cooperative Group : 7/43 = 16.3% (95% CI 8.1-30.0) 
+  Industry : 7/101 = 6.9% (95% CI 3.4-13.6) 
+ Fisher p = 0.0489 
+
+--- NCO by registry source ---
+  US : 39/275 = 14.2% (95% CI 10.6-18.8) 
+  International : 0/14 = 0.0% (95% CI 0.0-21.5) 
+
+--- FINAL multivariable: NCO ~ phase + sponsor + year + radiation + Registry_Source ---
+                                            OR CI_low CI_high     p
+(Intercept)                              0.000  0.000   0.000 0.027
+phase_fPHASE2/PHASE3                     0.769  0.157   3.771 0.746
+phase_fPHASE3                            1.657  0.768   3.576 0.198
+sponsor_fAcademic/Investigator-Initiated 3.136  1.269   7.748 0.013
+sponsor_fGovernment/Cooperative Group    3.693  1.141  11.955 0.029
+year                                     1.057  1.005   1.111 0.032
+Radiation                                2.329  1.134   4.782 0.021
+reg_fInternational                       0.000  0.000     Inf 0.988
+N = 289 events = 39 McFadden R2 = 0.103 
+
+================ FIRTH PENALIZED-LIKELIHOOD MODEL (Command 2) ================
+Firth penalized logistic regression — NCO ~ phase + sponsor + year + radiation + registry_source
+N=289, 39 events; overall penalized LR chi2=36.86 (7 df), P=4.98e-06
+Profile penalized-likelihood 95% CIs; penalized likelihood-ratio P values
+Term                                             OR           95% CI        P
+PHASE2/PHASE3                                  0.91    0.17 -   3.36   0.4239
+PHASE3                                         1.65    0.77 -   3.49   0.0601
+Academic/Investigator-Initiated                2.94    1.28 -   7.53   0.0036
+Government/Cooperative Group                   3.55    1.14 -  11.22   0.0176
+year                                           1.05    1.00 -   1.11   0.0005
+Radiation                                      2.25    1.13 -   4.63   0.0066
+International                                  0.20    0.00 -   1.59   0.1193
+
+Complete separation on registry-source term (international 0/14 events) under ordinary GLM
+(OR 0.000, CI [0, Inf], P=0.988) was resolved by Firth penalization: international OR 0.20 (0.00-1.59), P=0.12.
+Command 1: NCT00003564 Registration_Year imputed 1999 (studyFirstSubmitDate); regression N 288 -> 289.
