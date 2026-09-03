@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import sys
 import re
 from pathlib import Path
 
@@ -20,7 +21,32 @@ FIGURES = OUTPUTS / "figures"
 TABLES = OUTPUTS / "tables"
 SUBMISSION = ROOT / "revised_submission"
 SUBMISSION.mkdir(exist_ok=True)
-OUT = SUBMISSION / "GBM_Journal_of_Neuro_Oncology_Revised.docx"
+
+# Target journal. Default keeps the original Journal of Neuro-Oncology build so
+# earlier output is reproducible; `--journal jce` produces the Journal of
+# Clinical Epidemiology submission, which differs in abstract headings, requires
+# the "What is new?" box, and uses "Methods" rather than "Materials and Methods".
+JOURNAL = "jce" if "--journal=jce" in sys.argv or ("--journal" in sys.argv and "jce" in sys.argv) else "jno"
+
+JOURNAL_CONFIG = {
+    "jno": {
+        "filename": "GBM_Journal_of_Neuro_Oncology_Revised.docx",
+        "manuscript_type": "Original Clinical Study (Registry Analysis)",
+        "abstract_labels": {"Purpose": "Purpose", "Methods": "Methods"},
+        "methods_heading": "Materials and Methods",
+        "whats_new": False,
+    },
+    "jce": {
+        "filename": "GBM_Journal_of_Clinical_Epidemiology.docx",
+        "manuscript_type": "Original Article",
+        # JCE uses Objective / Study Design and Setting / Results / Conclusion
+        "abstract_labels": {"Purpose": "Objective", "Methods": "Study Design and Setting"},
+        "methods_heading": "Methods",
+        "whats_new": True,
+    },
+}
+CFG = JOURNAL_CONFIG[JOURNAL]
+OUT = SUBMISSION / CFG["filename"]
 
 
 TITLE = (
@@ -64,6 +90,34 @@ IMPORTANCE = (
     "Modality-stratified estimates reveal lower NCO registration among immunotherapy trials than among radiation-containing trials. "
     "Adjusted sponsor associations should not be interpreted as cognition-specific because academic sponsorship was also associated with HRQoL registration."
 )
+
+
+WHATS_NEW = [
+    (
+        "Key findings",
+        [
+            "Among 289 randomized phase II, II/III, and III glioblastoma or high-grade glioma trials, an objective neurocognitive outcome was registered in 13.5% (95% CI, 10.0%-17.9%) and health-related quality of life in 37.2% (95% CI, 31.8%-43.0%).",
+            "Within the same trials, 70 registered HRQoL without objective cognition and 4 did the reverse (McNemar P<.001); only 2 trials designated cognition a primary endpoint.",
+            "Registration did not improve after 2010 (odds ratio, 0.99 per year; 95% CI, 0.93-1.07).",
+        ],
+    ),
+    (
+        "What this adds to what was known",
+        [
+            "Earlier reviews assessed how well cognition was reported once a trial had already elected to measure it. This study estimates whether it is elected at all, and compares it against a second patient-centered domain within the same registrations, so the contrast is internal to each trial rather than across separate literatures.",
+            "Because no international-only record registered an objective neurocognitive outcome, ordinary logistic regression separated completely and returned an uninterpretable estimate; Firth penalized likelihood recovered estimable associations across all covariates.",
+            "A prespecified sponsor-by-outcome-domain interaction (P=.389) shows that the sponsor association was not demonstrably specific to cognition, which a single-outcome model would have obscured.",
+        ],
+    ),
+    (
+        "What is the implication and what should change now",
+        [
+            "Endpoint audits of trial registries should report paired within-trial discordance rather than two independent domain prevalences, because the paired contrast identifies whether a domain is being displaced rather than simply measured less often.",
+            "A domain-specific claim about sponsorship, funding, or design should be supported by a formal interaction test against a comparator domain before it is described as specific.",
+            "Where a stratum contributes no events, penalized-likelihood estimation should be prespecified rather than adopted after separation is observed.",
+        ],
+    ),
+]
 
 
 INTRODUCTION = [
@@ -404,13 +458,14 @@ r = p.add_run(TITLE)
 set_run_font(r, size=16, bold=True)
 
 add_text(AUTHOR, alignment=WD_ALIGN_PARAGRAPH.CENTER)
-p = add_text("[AFFILIATION REQUIRED: department, institution, city, country]", alignment=WD_ALIGN_PARAGRAPH.CENTER)
+add_text("Independent Researcher", alignment=WD_ALIGN_PARAGRAPH.CENTER)
+p = add_text("[CITY, COUNTRY REQUIRED]", alignment=WD_ALIGN_PARAGRAPH.CENTER)
 for r in p.runs:
     r.font.highlight_color = 7
 
 doc.add_paragraph()
 add_text(f"Running title: {RUNNING_TITLE}")
-add_text("Manuscript type: Original Clinical Study (Registry Analysis)")
+add_text(f"Manuscript type: {CFG['manuscript_type']}")
 add_text(f"Abstract word count: {abstract_words}")
 add_text(f"Main-text word count: {body_words}")
 add_text("Main tables: 2")
@@ -430,7 +485,7 @@ doc.add_page_break()
 # Abstract and required front matter
 add_heading("Abstract")
 for label, text in ABSTRACT:
-    add_text(text, bold_label=f"{label}. ")
+    add_text(text, bold_label=f"{CFG['abstract_labels'].get(label, label)}. ")
 
 p = doc.add_paragraph()
 p.paragraph_format.line_spacing = 1.5
@@ -439,12 +494,28 @@ set_run_font(r, bold=True)
 r = p.add_run("glioblastoma; high-grade glioma; neurocognition; clinical trials; outcomes")
 set_run_font(r)
 
+# JCE requires a "What is new?" box immediately after the abstract.
+if CFG["whats_new"]:
+    add_heading("What is new?")
+    for section, bullets in WHATS_NEW:
+        p = doc.add_paragraph()
+        p.paragraph_format.line_spacing = 1.5
+        p.paragraph_format.space_after = Pt(2)
+        r = p.add_run(section)
+        set_run_font(r, bold=True)
+        for bullet in bullets:
+            b = doc.add_paragraph(style="List Bullet")
+            b.paragraph_format.line_spacing = 1.5
+            b.paragraph_format.space_after = Pt(2)
+            set_run_font(b.add_run(bullet))
+    doc.add_paragraph()
+
 # Main text
 add_heading("Introduction")
 for paragraph in INTRODUCTION:
     add_text(paragraph)
 
-add_heading("Materials and Methods")
+add_heading(CFG["methods_heading"])
 for heading, paragraph in METHODS:
     add_heading(heading, level=2)
     add_text(paragraph)
