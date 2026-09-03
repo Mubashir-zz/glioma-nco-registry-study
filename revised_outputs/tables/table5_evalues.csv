@@ -1,0 +1,5 @@
+"Predictor","Odds ratio","95% CI lower","E-value (point)","E-value (CI bound)"
+"Academic/investigator vs industry",2.9368836223722,1.27768376970619,"5.32","1.87"
+"Government/cooperative vs industry",3.54756233889659,1.13556957331884,"6.55","1.53"
+"Registration year, per year",1.0537759905194,1.00461225410937,"1.29","1.07"
+"Radiation-containing intervention",2.25410035070555,1.1261820627203,"3.94","1.50"

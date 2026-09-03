@@ -1,0 +1,87 @@
+GBM/HGG neurocognitive-endpoint registry analysis
+Generated: 2026-09-03 04:35:19 PDT 
+
+Analytic cohort: 289 trials
+Objective NCO: 39 / 289 (13.5%)
+HRQoL complete case: 105 / 282 (37.2%)
+McNemar P: 0.000000000000016888 
+Prevalence difference (HRQoL-NCO): 23.4 pp; bootstrap 95% CI 18.4 to 28.7 
+Sponsor x domain interaction Wald P: 0.3892199 
+Nested LR adding sponsor: chi2=11.19599 df=2 p=0.00370529
+Apparent AUC: 0.7311282  optimism-corrected AUC: 0.6872338  Brier: 0.1067125 
+ICCTF any/core/MMSE-only:13/6/18 of 39
+
+Primary NCO Firth model
+                                     term    estimate         OR       lower
+                              (Intercept) -3.16630887 0.04215893 0.015251002
+                     Phase_fPHASE2/PHASE3 -0.09853872 0.90616060 0.165868557
+                            Phase_fPHASE3  0.50066866 1.64982407 0.769595940
+ Sponsor_fAcademic/Investigator-Initiated  1.07734903 2.93688362 1.277683770
+    Sponsor_fGovernment/Cooperative Group  1.26626070 3.54756234 1.135569573
+                                   Year_c  0.05237989 1.05377599 1.004612254
+                                Radiation  0.81275094 2.25410035 1.126182063
+                  Registry_fInternational -1.61554313 0.19878268 0.001535529
+      upper          p
+  0.1001544 0.00000000
+  3.3597647 0.89305865
+  3.4902623 0.19522481
+  7.5250031 0.01024957
+ 11.2233891 0.02982642
+  1.1085003 0.03136437
+  4.6303193 0.02158240
+  1.5911392 0.15539731
+Overall LR: 20.65613 df 7 p 0.00431387 
+
+Table 1 overall tests
+   variable          p
+      Phase 0.57843664
+    Sponsor 0.04886741
+   Registry 0.22879539
+ Strict GBM 0.50287884
+  Radiation 0.01409061
+  Completed 0.59771711
+  Pediatric 0.44185154
+ Enrollment 0.02221382
+
+Session information
+R version 4.3.2 (2023-10-31)
+Platform: aarch64-apple-darwin20 (64-bit)
+Running under: macOS 26.3
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+
+locale:
+[1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
+
+time zone: America/Los_Angeles
+tzcode source: internal
+
+attached base packages:
+[1] splines   stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+[1] mgcv_1.9-1      nlme_3.1-164    scales_1.4.0    patchwork_1.2.0
+[5] tidyr_1.3.1     dplyr_1.1.4     ggplot2_3.5.2   logistf_1.26.1 
+
+loaded via a namespace (and not attached):
+ [1] utf8_1.2.4           generics_0.1.3       shape_1.4.6         
+ [4] lattice_0.22-5       pROC_1.18.5          lme4_1.1-35.1       
+ [7] magrittr_2.0.3       mitml_0.4-5          grid_4.3.2          
+[10] RColorBrewer_1.1-3   iterators_1.0.14     mice_3.18.0         
+[13] cellranger_1.1.0     plyr_1.8.9           foreach_1.5.2       
+[16] jomo_2.7-6           operator.tools_1.6.3 glmnet_4.1-9        
+[19] Matrix_1.6-5         nnet_7.3-19          backports_1.4.1     
+[22] survival_3.8-3       purrr_1.0.2          fansi_1.0.6         
+[25] textshaping_0.3.7    codetools_0.2-19     cli_3.6.2           
+[28] rlang_1.1.3          withr_3.0.0          pan_1.9             
+[31] tools_4.3.2          nloptr_2.0.3         minqa_1.2.6         
+[34] boot_1.3-28.1        broom_1.0.5          vctrs_0.6.5         
+[37] R6_2.5.1             rpart_4.1.23         lifecycle_1.0.4     
+[40] MASS_7.3-60.0.1      ragg_1.2.7           pkgconfig_2.0.3     
+[43] pillar_1.9.0         gtable_0.3.6         glue_1.7.0          
+[46] Rcpp_1.0.12          systemfonts_1.0.5    tibble_3.2.1        
+[49] tidyselect_1.2.0     farver_2.1.1         labeling_0.4.3      
+[52] formula.tools_1.7.1  compiler_4.3.2       readxl_1.4.3        
