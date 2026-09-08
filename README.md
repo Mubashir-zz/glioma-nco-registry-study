@@ -2,7 +2,7 @@
 
 This repository contains the retained trial-level data, reproducible R analysis, publication figures and tables, and manuscript builder for a cross-sectional registry analysis of objective neurocognitive outcome (NCO) registration in randomized phase II, II/III, and III glioblastoma or high-grade glioma therapeutic trials.
 
-The current submission package is formatted for the **Journal of Neuro-Oncology** as an Original Clinical Study. The journal is a close subject-matter fit, permits documented LLM assistance, and offers a subscription publication route without an article-processing charge.
+The submission package is formatted for the **Journal of Clinical Epidemiology** as an Original Article. The paper's contribution is a measurement one — paired within-trial endpoint discordance, penalized estimation under separation, and a prespecified specificity test — which places it in a clinical-epidemiology journal rather than a subject-specialty one. JCE publishes on a subscription route with no article-processing charge.
 
 ## Study at a glance
 
@@ -28,9 +28,12 @@ install.packages(c("readxl", "logistf", "ggplot2", "dplyr", "tidyr", "patchwork"
 From this directory, run:
 
 ```bash
-Rscript gbm_analysis_revised.R
-python3 build_revised_manuscript.py
+Rscript gbm_analysis_revised.R        # regenerates every table and figure
+python3 build_revised_manuscript.py   # rebuilds revised_submission/MANUSCRIPT.docx
 ```
+
+Rebuild the manuscript before submitting. An earlier committed `.docx` had drifted
+from this script and was missing a figure cross-reference and two citations.
 
 The R script can also be invoked from the parent workspace:
 
@@ -46,13 +49,16 @@ The analysis script does not install packages, contains integrity assertions for
 - `revised_outputs/analysis_dataset.csv`: analysis-ready trial-level data.
 - `gbm_analysis_revised.R`: single analysis and visualization pipeline.
 - `gbm_figures.R`: figure definitions, sourced by the analysis script.
+- `build_revised_manuscript.py`: deterministic Word-manuscript builder.
 - `revised_outputs/analysis_summary.txt`: numerical results and R session information.
 - `revised_outputs/tables/`: machine-generated CSV tables, including sensitivity and interaction analyses.
 - `revised_outputs/figures/`: publication figures in PDF, PNG, and 600-dpi TIFF formats.
-- `build_revised_manuscript.py`: deterministic Word-manuscript builder.
-- `revised_submission/GBM_Journal_of_Neuro_Oncology_Revised.docx`: current revised manuscript for author review.
+- `revised_submission/`: the submission package — `MANUSCRIPT.docx`, `COVER_LETTER.md`, `HIGHLIGHTS.txt`.
 
-The older `gbm_analysis.R`, `fig2_forest.R`, and `fig3_temporal.R` files are retained only for provenance. They duplicate logic or contain hard-coded values and must not be used for the submitted results. Older figures and manuscript files in the project root are likewise superseded by `revised_outputs/` and `revised_submission/`.
+Superseded scripts, superseded figure sets and the earlier subject-specialty
+manuscript build have been removed from the working tree; they remain in git
+history if the development path needs inspecting. What is here is what the
+submission uses.
 
 ## Cohort provenance and limitations
 

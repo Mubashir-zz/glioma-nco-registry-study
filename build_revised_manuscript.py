@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import csv
-import sys
 import re
 from pathlib import Path
 
@@ -22,31 +21,13 @@ TABLES = OUTPUTS / "tables"
 SUBMISSION = ROOT / "revised_submission"
 SUBMISSION.mkdir(exist_ok=True)
 
-# Target journal. Default keeps the original Journal of Neuro-Oncology build so
-# earlier output is reproducible; `--journal jce` produces the Journal of
-# Clinical Epidemiology submission, which differs in abstract headings, requires
-# the "What is new?" box, and uses "Methods" rather than "Materials and Methods".
-JOURNAL = "jce" if "--journal=jce" in sys.argv or ("--journal" in sys.argv and "jce" in sys.argv) else "jno"
-
-JOURNAL_CONFIG = {
-    "jno": {
-        "filename": "GBM_Journal_of_Neuro_Oncology_Revised.docx",
-        "manuscript_type": "Original Clinical Study (Registry Analysis)",
-        "abstract_labels": {"Purpose": "Purpose", "Methods": "Methods"},
-        "methods_heading": "Materials and Methods",
-        "whats_new": False,
-    },
-    "jce": {
-        "filename": "GBM_Journal_of_Clinical_Epidemiology.docx",
-        "manuscript_type": "Original Article",
-        # JCE uses Objective / Study Design and Setting / Results / Conclusion
-        "abstract_labels": {"Purpose": "Objective", "Methods": "Study Design and Setting"},
-        "methods_heading": "Methods",
-        "whats_new": True,
-    },
-}
-CFG = JOURNAL_CONFIG[JOURNAL]
-OUT = SUBMISSION / CFG["filename"]
+# Journal of Clinical Epidemiology, Original Article. JCE heads the abstract
+# Objective / Study Design and Setting / Results / Conclusion, requires a
+# "What is new?" box after it, and calls the section Methods.
+OUT = SUBMISSION / "MANUSCRIPT.docx"
+MANUSCRIPT_TYPE = "Original Article"
+ABSTRACT_LABELS = {"Purpose": "Objective", "Methods": "Study Design and Setting"}
+METHODS_HEADING = "Methods"
 
 
 TITLE = (
@@ -459,13 +440,13 @@ set_run_font(r, size=16, bold=True)
 
 add_text(AUTHOR, alignment=WD_ALIGN_PARAGRAPH.CENTER)
 add_text("Independent Researcher", alignment=WD_ALIGN_PARAGRAPH.CENTER)
-p = add_text("[CITY, COUNTRY REQUIRED]", alignment=WD_ALIGN_PARAGRAPH.CENTER)
+p = add_text("[CITY, COUNTRY]", alignment=WD_ALIGN_PARAGRAPH.CENTER)
 for r in p.runs:
     r.font.highlight_color = 7
 
 doc.add_paragraph()
 add_text(f"Running title: {RUNNING_TITLE}")
-add_text(f"Manuscript type: {CFG['manuscript_type']}")
+add_text(f"Manuscript type: {MANUSCRIPT_TYPE}")
 add_text(f"Abstract word count: {abstract_words}")
 add_text(f"Main-text word count: {body_words}")
 add_text("Main tables: 2")
@@ -475,8 +456,9 @@ add_text("Supplementary figures: 2")
 add_text(f"References: {len(REFERENCES)}")
 
 doc.add_paragraph()
-p = add_text("Corresponding author: Mubashir Ahmad Khan, MBBS")
-p = add_text("[CORRESPONDENCE REQUIRED: full postal address, email, telephone]")
+add_text("Corresponding author: Mubashir Ahmad Khan, MBBS")
+add_text("Email: khanmubashirahmad@gmail.com")
+p = add_text("[POSTAL ADDRESS AND TELEPHONE]")
 for r in p.runs:
     r.font.highlight_color = 7
 
@@ -485,7 +467,7 @@ doc.add_page_break()
 # Abstract and required front matter
 add_heading("Abstract")
 for label, text in ABSTRACT:
-    add_text(text, bold_label=f"{CFG['abstract_labels'].get(label, label)}. ")
+    add_text(text, bold_label=f"{ABSTRACT_LABELS.get(label, label)}. ")
 
 p = doc.add_paragraph()
 p.paragraph_format.line_spacing = 1.5
@@ -495,27 +477,25 @@ r = p.add_run("glioblastoma; high-grade glioma; neurocognition; clinical trials;
 set_run_font(r)
 
 # JCE requires a "What is new?" box immediately after the abstract.
-if CFG["whats_new"]:
-    add_heading("What is new?")
-    for section, bullets in WHATS_NEW:
-        p = doc.add_paragraph()
-        p.paragraph_format.line_spacing = 1.5
-        p.paragraph_format.space_after = Pt(2)
-        r = p.add_run(section)
-        set_run_font(r, bold=True)
-        for bullet in bullets:
-            b = doc.add_paragraph(style="List Bullet")
-            b.paragraph_format.line_spacing = 1.5
-            b.paragraph_format.space_after = Pt(2)
-            set_run_font(b.add_run(bullet))
-    doc.add_paragraph()
+add_heading("What is new?")
+for section, bullets in WHATS_NEW:
+    p = doc.add_paragraph()
+    p.paragraph_format.line_spacing = 1.5
+    p.paragraph_format.space_after = Pt(2)
+    set_run_font(p.add_run(section), bold=True)
+    for bullet in bullets:
+        b = doc.add_paragraph(style="List Bullet")
+        b.paragraph_format.line_spacing = 1.5
+        b.paragraph_format.space_after = Pt(2)
+        set_run_font(b.add_run(bullet))
+doc.add_paragraph()
 
 # Main text
 add_heading("Introduction")
 for paragraph in INTRODUCTION:
     add_text(paragraph)
 
-add_heading(CFG["methods_heading"])
+add_heading(METHODS_HEADING)
 for heading, paragraph in METHODS:
     add_heading(heading, level=2)
     add_text(paragraph)
@@ -546,7 +526,7 @@ for idx, reference in enumerate(REFERENCES, 1):
     r = p.add_run(f"{idx}. {reference}")
     set_run_font(r, size=9)
 
-# Statements and declarations required by Journal of Neuro-Oncology
+# Statements and declarations required by Journal of Clinical Epidemiology
 add_heading("Statements and Declarations")
 add_heading("Funding", level=2)
 add_text("The author declares that no funds, grants, or other support were received during the preparation of this manuscript.")
@@ -555,7 +535,7 @@ add_text("The author has no relevant financial or non-financial interests to dis
 add_heading("Author Contributions", level=2)
 add_text("Mubashir Ahmad Khan: conceptualization, methodology, investigation, data curation, formal analysis, visualization, writing-original draft, writing-review and editing, and final accountability for the work.")
 add_heading("Data Availability", level=2)
-add_text("The retained trial-level matrix, analysis dataset, complete R script, machine-generated tables, and figure files will be made publicly available at [INSERT VERIFIED GITHUB OR OSF URL BEFORE SUBMISSION]. No participant-level data were used.")
+add_text("The retained trial-level matrix, analysis dataset, complete R script, machine-generated tables, and figure files are publicly available at https://github.com/Mubashir-zz/glioma-nco-registry-study. Code is released under the MIT Licence and trial-level data under CC BY 4.0. No participant-level data were used.")
 add_heading("Ethics Approval", level=2)
 add_text("This study analyzed publicly available trial-registration records and did not involve human participants or identifiable participant-level data. Institutional review board approval and informed consent were not required.")
 add_heading("Use of Generative AI and AI-Assisted Technologies", level=2)
