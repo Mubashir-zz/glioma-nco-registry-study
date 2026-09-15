@@ -1,0 +1,53 @@
+name: reproduce analysis
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.3.2'
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::readxl
+            any::logistf
+            any::ggplot2
+            any::dplyr
+            any::tidyr
+            any::patchwork
+            any::pROC
+
+      - name: Keep a copy of the committed outputs
+        run: cp -R revised_outputs /tmp/committed_outputs
+
+      - name: Re-run the analysis
+        run: Rscript gbm_analysis_revised.R
+
+      # The point of this job. If a code or data change moves any estimate, the
+      # regenerated tables stop matching what is committed and the build fails,
+      # rather than the repository quietly publishing different numbers than the
+      # manuscript reports.
+      - name: Check every table reproduces exactly
+        run: |
+          status=0
+          for f in revised_outputs/tables/*.csv; do
+            if ! diff -q "$f" "/tmp/committed_outputs/tables/$(basename "$f")" > /dev/null; then
+              echo "::error file=$f::regenerated output differs from the committed version"
+              diff "/tmp/committed_outputs/tables/$(basename "$f")" "$f" | head -20
+              status=1
+            fi
+          done
+          [ $status -eq 0 ] && echo "All $(ls revised_outputs/tables/*.csv | wc -l) tables reproduce exactly."
+          exit $status
