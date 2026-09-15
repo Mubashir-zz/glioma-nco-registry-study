@@ -1,5 +1,7 @@
 # Objective neurocognitive endpoints in randomized glioma trials
 
+[![reproduce analysis](https://github.com/Mubashir-zz/glioma-nco-registry-study/actions/workflows/reproduce.yml/badge.svg)](https://github.com/Mubashir-zz/glioma-nco-registry-study/actions/workflows/reproduce.yml)
+
 This repository contains the retained trial-level data, reproducible R analysis, publication figures and tables, and manuscript builder for a cross-sectional registry analysis of objective neurocognitive outcome (NCO) registration in randomized phase II, II/III, and III glioblastoma or high-grade glioma therapeutic trials.
 
 The submission package is formatted for the **Journal of Clinical Epidemiology** as an Original Article. The paper's contribution is a measurement one — paired within-trial endpoint discordance, penalized estimation under separation, and a prespecified specificity test — which places it in a clinical-epidemiology journal rather than a subject-specialty one. JCE publishes on a subscription route with no article-processing charge.
