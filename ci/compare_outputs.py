@@ -11,8 +11,9 @@ So numbers are compared with a relative tolerance of 1e-8 -- six orders of
 magnitude tighter than the fourth significant figure the manuscript reports,
 and still loose enough to survive a different linear-algebra backend. Any
 real change to the code, the data, or the model specification moves an
-estimate far beyond that and fails the build. Non-numeric cells, the column
-names, and the row count must match exactly.
+estimate far beyond that and fails the build. The two bootstrap summary
+tables are the exception and are explained where their tolerance is set.
+Non-numeric cells, the column names, and the row count must match exactly.
 """
 
 from __future__ import annotations
@@ -25,6 +26,17 @@ from pathlib import Path
 RTOL = 1e-8
 ATOL = 1e-12
 
+# Two tables summarise 2,000 bootstrap replicates rather than a single fit, so
+# the per-fit noise above accumulates: observed drift between macOS and the
+# Linux runner is about 6e-6 relative, not 1e-14. They get a tolerance of 1e-4,
+# which is still an order of magnitude tighter than the three significant
+# figures the manuscript quotes from them.
+MONTE_CARLO_RTOL = 1e-4
+MONTE_CARLO_TABLES = {
+    "bootstrap_performance.csv",
+    "prevalence_difference_bootstrap.csv",
+}
+
 
 def as_float(value):
     try:
@@ -33,7 +45,7 @@ def as_float(value):
         return None
 
 
-def cells_agree(committed, regenerated):
+def cells_agree(committed, regenerated, rtol=RTOL):
     if committed == regenerated:
         return True
     a, b = as_float(committed), as_float(regenerated)
@@ -41,7 +53,7 @@ def cells_agree(committed, regenerated):
         return False
     if math.isnan(a) and math.isnan(b):
         return True
-    return math.isclose(a, b, rel_tol=RTOL, abs_tol=ATOL)
+    return math.isclose(a, b, rel_tol=rtol, abs_tol=ATOL)
 
 
 def read_rows(path):
@@ -59,6 +71,7 @@ def compare(committed_path, regenerated_path):
         return ["%s: %d committed rows, %d regenerated"
                 % (name, len(committed), len(regenerated))]
 
+    rtol = MONTE_CARLO_RTOL if name in MONTE_CARLO_TABLES else RTOL
     problems = []
     for row_no, (want, got) in enumerate(zip(committed, regenerated), start=1):
         if len(want) != len(got):
@@ -66,7 +79,7 @@ def compare(committed_path, regenerated_path):
                             % (name, row_no, len(want), len(got)))
             continue
         for col_no, (w, g) in enumerate(zip(want, got), start=1):
-            if not cells_agree(w, g):
+            if not cells_agree(w, g, rtol):
                 problems.append("%s: row %d, column %d: committed %r, regenerated %r"
                                 % (name, row_no, col_no, w, g))
     return problems
@@ -90,8 +103,9 @@ def main():
 
     if problems:
         return 1
-    print("All %d tables reproduce to within a relative tolerance of %g."
-          % (len(tables), RTOL))
+    print("All %d tables reproduce: relative tolerance %g, or %g for the %d "
+          "bootstrap summaries."
+          % (len(tables), RTOL, MONTE_CARLO_RTOL, len(MONTE_CARLO_TABLES)))
     return 0
 
 
