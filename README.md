@@ -30,12 +30,12 @@ install.packages(c("readxl", "logistf", "ggplot2", "dplyr", "tidyr", "patchwork"
 From this directory, run:
 
 ```bash
-Rscript gbm_analysis_revised.R        # regenerates every table and figure
-python3 build_revised_manuscript.py   # rebuilds revised_submission/MANUSCRIPT.docx
+Rscript gbm_analysis_revised.R        # regenerates every analysis table and figure
 ```
 
-Rebuild the manuscript before submitting. An earlier committed `.docx` had drifted
-from this script and was missing a figure cross-reference and two citations.
+`build_revised_manuscript.py` is retained as a historical JCE-format builder. It
+contains the former journal targeting and sole-author draft and must not be used
+to recreate the manuscript currently under review.
 
 The R script can also be invoked from the parent workspace:
 
@@ -51,7 +51,7 @@ The analysis script does not install packages, contains integrity assertions for
 - `revised_outputs/analysis_dataset.csv`: analysis-ready trial-level data.
 - `gbm_analysis_revised.R`: single analysis and visualization pipeline.
 - `gbm_figures.R`: figure definitions, sourced by the analysis script.
-- `build_revised_manuscript.py`: deterministic Word-manuscript builder.
+- `build_revised_manuscript.py`: historical JCE-format Word builder; not the current submitted manuscript.
 - `revised_outputs/analysis_summary.txt`: numerical results and R session information.
 - `revised_outputs/tables/`: machine-generated CSV tables, including sensitivity and interaction analyses.
 - `revised_outputs/figures/`: publication figures in PDF, PNG, and 600-dpi TIFF formats.
