@@ -1,3 +1,11 @@
+"""Historical JCE-format manuscript builder.
+
+This script predates the manuscript now under review at Supportive Care in Cancer.
+It contains the former sole-author title page and journal-specific structure and
+must not be used to recreate or represent the current submitted manuscript.
+The analysis code and machine-generated results remain authoritative.
+"""
+
 from __future__ import annotations
 
 import csv
