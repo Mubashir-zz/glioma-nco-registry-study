@@ -4,7 +4,7 @@
 
 This repository contains the retained trial-level data, reproducible R analysis, publication figures and tables, and manuscript builder for a cross-sectional registry analysis of objective neurocognitive outcome (NCO) registration in randomized phase II, II/III, and III glioblastoma or high-grade glioma therapeutic trials.
 
-The submission package is formatted for the **Journal of Clinical Epidemiology** as an Original Article. The paper's contribution is a measurement one — paired within-trial endpoint discordance, penalized estimation under separation, and a prespecified specificity test — which places it in a clinical-epidemiology journal rather than a subject-specialty one. JCE publishes on a subscription route with no article-processing charge.
+The current manuscript is under review at **Supportive Care in Cancer**. It lists Mubashir Ahmad Khan, Jacob S. Young, and Weitao Man as authors. The committed manuscript builder and JCE cover-letter draft predate that submission and are retained only as development history; they must not be treated as the submitted manuscript.
 
 ## Study at a glance
 
@@ -55,12 +55,12 @@ The analysis script does not install packages, contains integrity assertions for
 - `revised_outputs/analysis_summary.txt`: numerical results and R session information.
 - `revised_outputs/tables/`: machine-generated CSV tables, including sensitivity and interaction analyses.
 - `revised_outputs/figures/`: publication figures in PDF, PNG, and 600-dpi TIFF formats.
-- `revised_submission/`: the submission package — `MANUSCRIPT.docx`, `COVER_LETTER.md`, `HIGHLIGHTS.txt`.
+- `revised_submission/`: historical pre-submission build artifacts; these are not the version currently under review.
 
-Superseded scripts, superseded figure sets and the earlier subject-specialty
-manuscript build have been removed from the working tree; they remain in git
-history if the development path needs inspecting. What is here is what the
-submission uses.
+Superseded scripts and figure sets remain available through git history. The
+analysis dataset, scripts, machine-generated tables, and figures are the
+reproducibility record. The journal-facing manuscript and correspondence in
+`revised_submission/` are historical drafts and are not current submission files.
 
 ## Cohort provenance and limitations
 
@@ -68,7 +68,7 @@ Records were identified from ClinicalTrials.gov and international trial registri
 
 ## Authorship and assisted revision
 
-Mubashir Ahmad Khan conceived the study, performed the original searches, screening, adjudication, and data collection, and retains responsibility for scientific interpretation and the final submitted work. Ai used for coding assistance, statistical verification. This assistance does not qualify for authorship, but it should be disclosed accurately under the target journal's policy. The manuscript contains a concise disclosure for author review.
+Mubashir Ahmad Khan is the first author and lead analyst. He developed the study with scientific supervision, performed the original searches, screening, adjudication, data collection and R analysis, and prepared the reproducible research files. The current manuscript lists Mubashir Ahmad Khan, Jacob S. Young, and Weitao Man as authors. Exact contribution statements belong to the submitted manuscript and are not reconstructed here. AI tools were used for coding assistance and statistical verification under author review; they did not perform screening or adjudication.
 
 ## Verified reproduction
 
@@ -92,4 +92,4 @@ patient-level data is included; every record is a public trial registration.
 ## Related work
 
 - [neurocognitive-outcome-classifier](https://github.com/Mubashir-zz/neurocognitive-outcome-classifier) — extending this question across CNS, breast, lung and head & neck with a hand-labelled 1,888-trial gold standard
-- [cognitive-outcome-classifier-api](https://github.com/Mubashir-zz/cognitive-outcome-classifier-api) — the deployed classifier that scales the screening step
+- [cognitive-outcome-classifier-api](https://github.com/Mubashir-zz/cognitive-outcome-classifier-api) — the documented serving prototype and deployment evaluation
